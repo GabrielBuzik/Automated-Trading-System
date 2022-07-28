@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
 from binance.enums import *
-client = Client('6SvP98KTke5jUTZzOTCihwDXJ9BJgNapUhqpm9sbX5EYPShF18ssDMlJMDp3cIRW','HbIYCMQVllQIliTzQdB6Co03LAKEYMX0WbhkR2QkFkgVeAsCJPNTvcJsm2ITUKHe')
+client = Client()
 OHLC=((np.array(client.futures_klines(symbol='BTCBUSD',interval='1h',limit=100))[:,1:5]).astype(float))
 H=OHLC[:,3]
 ##########################################################################################
