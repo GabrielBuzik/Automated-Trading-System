@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
 from binance.enums import *
-client = Client()
+client = Client('Egf30g25PRwSLOT8QhcVkXar4AzKDcOcmBxo6zsgUsEDmuQgMTlK2J3Ah6xHRJ0R','5Ny29lsgKZXHwTq6rUN4sSy9JpHMETXgk5moy49Nti6K1IbiUySqKcuXfhTiZadb')
 OHLC=((np.array(client.futures_klines(symbol='BTCBUSD',interval='1h',limit=100))[:,1:5]).astype(float))
 H=OHLC[:,3]
 ##########################################################################################
@@ -21,10 +21,12 @@ def EMA(intervals, prices):
     return ema
 
 ##########RAVI##########
-def RAVI(first_EMA,Second_EMA,prices_):
-    ravi=np.zeros(len(prices_))
-    for i in range(1,len(prices_)):
-        ravi[i]=(EMA(first_EMA,prices_)[i]-EMA(Second_EMA,prices_)[i])/EMA(Second_EMA,prices_)[i]
+def RAVI(first_EMA,Second_EMA,prices):
+    EMA_first = EMA(first_EMA, prices)
+    EMA_second = EMA(Second_EMA,prices)
+    ravi=np.zeros(len(prices))
+    for i in range(1,len(prices)):
+        ravi[i]=(EMA_first[i]-EMA_second[i])/EMA_second[i]
     return ravi
 
 ##########TRUERANGE##########
@@ -36,21 +38,27 @@ def True_Range(OHLC_):
 
 ##########AVERAGE TRUE RANGE##########
 def Average_True_Range(intervals,OHLC):
+    TR = True_Range(OHLC)
     ATR=np.zeros(len(OHLC))
     for i in range(1, len(OHLC)):
-        ATR[i]=np.mean(True_Range(OHLC)[i-intervals:i])
+        if i >= 6:
+            ATR[i]=np.mean(TR[i-intervals:i])
+        else:
+            ATR[i] = 0
     return ATR
 ##########AVERAGE TRUE RANGE TRAILING STOPS##########
-def ATR_Trailing_Stops_BuyOrd(ATR_int,coef,OHLC):
+def ATR_Trailing_Stops_BuyOrd(interval,coef,OHLC):
+    ATR = Average_True_Range(interval,OHLC)
     SB=np.zeros(len(OHLC))
     for i in range(1,len(OHLC)):
-        SB[i]=H[i]-Average_True_Range(ATR_int,OHLC)[i]*coef
+        SB[i]=OHLC[:,3][i]-ATR[i]*coef
     return SB
 
-def ATR_Trailing_Stops_SellOrd(ATR_int,coef,OHLC):
+def ATR_Trailing_Stops_SellOrd(interval,coef,OHLC):
+    ATR = Average_True_Range(interval,OHLC)
     SL=np.zeros(len(OHLC))
     for i in range(1,len(OHLC)):
-        SL[i]=H[i]+Average_True_Range(ATR_int,OHLC)[i]*coef
+        SL[i]=OHLC[:,3][i]+ATR[i]*coef
     return SL
 
 ##########RSI gradual calculation##########
@@ -114,26 +122,25 @@ def Relative_Strength_Index_EMA(intervals, prices):
 ################################################################################################
 ########################################ORDER CONDITIONS########################################
 ################################################################################################
-def RAVI_sign_change_to_pos(first_EMA,Second_EMA,prices_):
-    if RAVI(first_EMA,Second_EMA,prices_)[-1]>0 and RAVI(first_EMA,Second_EMA,prices_)[-2]<0:
+def RAVI_sign_change_to_pos(first_EMA,Second_EMA,ravi):
+    if ravi[-1]>0 and ravi[-2]<0:
+        return True
+    else:
+        return False
+def RAVI_sign_change_to_neg(first_EMA,Second_EMA,ravi):
+    if ravi[-1]<0 and ravi[-2]>0:
         return True
     else:
         return False
 
-def RAVI_sign_change_to_neg(first_EMA,Second_EMA,prices_):
-    if RAVI(first_EMA,Second_EMA,prices_)[-1]<0 and RAVI(first_EMA,Second_EMA,prices_)[-2]>0:
+def RAVI_sign_change_to_pos_last_int(first_EMA,Second_EMA,ravi):
+    if ravi[-2]>0 and ravi[-3]<0:
         return True
     else:
         return False
 
-def RAVI_sign_change_to_pos_last_int(first_EMA,Second_EMA,prices_):
-    if RAVI(first_EMA,Second_EMA,prices_)[-2]>0 and RAVI(first_EMA,Second_EMA,prices_)[-3]<0:
-        return True
-    else:
-        return False
-
-def RAVI_sign_change_to_neg_last_int(first_EMA,Second_EMA,prices_):
-    if RAVI(first_EMA,Second_EMA,prices_)[-2]<0 and RAVI(first_EMA,Second_EMA,prices_)[-3]>0:
+def RAVI_sign_change_to_neg_last_int(first_EMA,Second_EMA,ravi):
+    if ravi[-2]<0 and ravi[-3]>0:
         return True
     else:
         return False
