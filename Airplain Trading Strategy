@@ -5,7 +5,7 @@ from binance.enums import *
 import module_bot as mb
 
 #API Key and Secret key 
-client = Client('Egf30g25PRwSLOT8QhcVkXar4AzKDcOcmBxo6zsgUsEDmuQgMTlK2J3Ah6xHRJ0R','5Ny29lsgKZXHwTq6rUN4sSy9JpHMETXgk5moy49Nti6K1IbiUySqKcuXfhTiZadb')
+client = Client(api_key,secret_key)
 np.set_printoptions(precision=10,threshold=100)
 
 #RETRIEVE KLINES
