@@ -30,15 +30,15 @@ else:
 ravi = mb.RAVI(5,50,C)
 if STATE=='hold' or STATE== None:
 	if mb.RAVI_sign_change_to_pos(5,50,ravi) or mb.RAVI_sign_change_to_pos_last_int(5,50,ravi):
-		#client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
-		#client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='BUY',quantity=0.03)
+		client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
+		client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='BUY',quantity=0.03)
 		STATE='yes_buy'
 		with open('buy.txt','w') as f:
 			f.write('1')
 			f.close()
 	elif mb.RAVI_sign_change_to_neg(5,50,ravi) or mb.RAVI_sign_change_to_neg_last_int(5,50,ravi):
-		#client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
-		#client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='SELL',quantity=0.03)
+		client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
+		client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='SELL',quantity=0.03)
 		STATE='yes_sell'
 		with open('sell.txt', 'w') as f:
 			f.write('1')
@@ -60,17 +60,17 @@ elif STATE == 'yes_buy':
 	else:
 		SL_max=np.max(SL[0:99])
 	#Conditions for staying in position or leaving it 
-	if  (ravi[-1]<(mb.RAVI(5,50,C)[-2]-0.001) and ravi[-1]<(ravi[-3]-0.001)) or  ravi[-1]<0 or C[-1]<SL_max:
+	if  (ravi[-1]<(ravi[-2]-0.001) and ravi[-1]<(ravi[-3]-0.001)) or  ravi[-1]<0 or C[-1]<SL_max:
 		if ravi[-1]<0:
-			#client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
-			#client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='SELL',quantity=0.06)
+			client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
+			client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='SELL',quantity=0.06)
 			STATE='yes_sell'
 			with open('sell.txt','w') as f:
 				f.write('1')
 				f.close()
 		else:
-			#client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
-			#client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='SELL',quantity=0.03)
+			client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
+			client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='SELL',quantity=0.03)
 			STATE='hold'
 	else:
 		STATE=='yes_buy'
@@ -91,17 +91,17 @@ elif STATE=='yes_sell':
 	else:
 		SL_min=np.min(SL[0:99])
     #Conditions for staying in position or leaving it
-	if  (ravi[-1]>(mb.RAVI(5,50,C)[-2]+0.001) and ravi[-1]>(ravi[-3]+0.001)) or ravi[-1]>0 or C[-1]>SL_min:
+	if  (ravi[-1]>(ravi[-2]+0.001) and ravi[-1]>(ravi[-3]+0.001)) or ravi[-1]>0 or C[-1]>SL_min:
 		if ravi[-1]>0:
-			#client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
-			#client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='BUY',quantity=0.06)
+			client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
+			client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='BUY',quantity=0.06)
 			STATE='yes_buy'
 			with open('buy.txt','w') as f:
 				f.write('1')
 				f.close()
 		else:
-			#client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
-			#client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='BUY',quantity=0.03)
+			client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
+			client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='BUY',quantity=0.03)
 			STATE='hold'
 	else:
 		STATE='yes_sell'
