@@ -6,7 +6,11 @@ import datetime
 import time
 from datetime import datetime, date, time
 
-Pose_BUSD = client.futures_position_information()[13]
+for i in client.futures_position_information():
+    if i['symbol'] == 'BTCBUSD':
+        print('current BTCBUSD position:')
+        Pose_BUSD = i 
+
 BUSD_Balance = client.futures_account_balance()[-1]['balance']
 BUSD_symbol_name = client.futures_account_balance()[-1]['asset']
 
