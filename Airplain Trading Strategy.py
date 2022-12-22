@@ -30,7 +30,7 @@ else:
 ravi = mb.RAVI(5,50,C)
 if STATE=='hold' or STATE== None:
 
-	if mb.RAVI_sign_change_to_pos(5,50,ravi) or mb.RAVI_sign_change_to_pos_last_int(5,50,ravi):
+	if #open condition:
 		#transaction takes place
 		client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
 		client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='BUY',quantity=0.03)
@@ -42,7 +42,7 @@ if STATE=='hold' or STATE== None:
 
 		import add_to_database
 
-	elif mb.RAVI_sign_change_to_neg(5,50,ravi) or mb.RAVI_sign_change_to_neg_last_int(5,50,ravi):
+	elif #open condition:
 		#transaction takes place
 		client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
 		client.futures_create_order(symbol='BTCBUSD',type='MARKET',side='SELL',quantity=0.03)
