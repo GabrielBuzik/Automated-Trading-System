@@ -71,7 +71,7 @@ elif STATE == 'yes_buy':
 	else:
 		SL_max=np.max(SL[0:99])
 	#Conditions for staying in position or leaving it 
-	if  (ravi[-1]<(ravi[-2]-0.001) and ravi[-1]<(ravi[-3]-0.001)) or  ravi[-1]<0 or C[-1]<SL_max:
+	if  #exit condition:
 		if ravi[-1]<0:
 			#transaction takes place
 			client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
@@ -111,7 +111,7 @@ elif STATE=='yes_sell':
 	else:
 		SL_min=np.min(SL[0:99])
     #Conditions for staying in position or leaving it
-	if  (ravi[-1]>(ravi[-2]+0.001) and ravi[-1]>(ravi[-3]+0.001)) or ravi[-1]>0 or C[-1]>SL_min:
+	if  #exit condition:
 		if ravi[-1]>0:
 			#transaction takes place
 			client.futures_change_leverage(symbol='BTCBUSD', leverage=4)
